@@ -75,7 +75,7 @@ describe("namespace option", () => {
       @info(#{ version: "1.0.0" })
       namespace TestServiceNamespace;
 
-      @route("/ping") @get op ping(): OkResponse;
+      @route("/ping") @get op ping(): /** Success */ OkResponse;
       `,
       { printWidth: 100, tabWidth: 2 },
     );

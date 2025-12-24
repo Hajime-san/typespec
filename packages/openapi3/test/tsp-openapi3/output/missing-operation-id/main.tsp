@@ -12,12 +12,12 @@ namespace title;
 @route("/")
 @get
 // FIXME: Open API operation 'GET /' is missing an operationId. Generated: 'get_root'
-op get_root(): OkResponse | {
+op get_root(): /** The request has succeeded. */ OkResponse | /** Client error */ {
   @statusCode
   @minValue(400)
   @maxValue(499)
   statusCode: int32;
-} | {
+} | /** Server error */ {
   @statusCode
   @minValue(500)
   @maxValue(599)
@@ -27,12 +27,12 @@ op get_root(): OkResponse | {
 @route("/foo")
 @put
 // FIXME: Open API operation 'PUT /foo' is missing an operationId. Generated: 'put_foo'
-op put_foo(): OkResponse | {
+op put_foo(): /** The request has succeeded. */ OkResponse | /** Client error */ {
   @statusCode
   @minValue(400)
   @maxValue(499)
   statusCode: int32;
-} | {
+} | /** Server error */ {
   @statusCode
   @minValue(500)
   @maxValue(599)

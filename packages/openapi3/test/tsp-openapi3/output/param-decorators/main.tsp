@@ -24,12 +24,12 @@ model Thing {
   @maxValue(10)
   @query(#{ explode: true })
   count: int32,
-): Thing;
+): /** The request has succeeded. */ Thing;
 
 @route("/thing/{name}") @put op Operations_putThing(
   ...Parameters.NameParameter,
   @body body: Thing,
-): Thing;
+): /** The request has succeeded. */ Thing;
 
 namespace Parameters {
   model NameParameter {

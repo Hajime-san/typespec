@@ -34,7 +34,8 @@ model WidgetUpdate {
 @tag("Widgets")
 @route("/widgets")
 @get
-op Widgets_list(): Body<Widget[]> | GeneratedHelpers.DefaultResponse<
+op Widgets_list(
+): /** The request has succeeded. */ Body<Widget[]> | GeneratedHelpers.DefaultResponse<
   Description = "An unexpected error response.",
   Body = Error
 >;
@@ -42,7 +43,9 @@ op Widgets_list(): Body<Widget[]> | GeneratedHelpers.DefaultResponse<
 @tag("Widgets")
 @route("/widgets")
 @post
-op Widgets_create(@body body: WidgetCreate): Widget | GeneratedHelpers.DefaultResponse<
+op Widgets_create(
+  @body body: WidgetCreate,
+): /** The request has succeeded. */ Widget | GeneratedHelpers.DefaultResponse<
   Description = "An unexpected error response.",
   Body = Error
 >;
@@ -50,7 +53,9 @@ op Widgets_create(@body body: WidgetCreate): Widget | GeneratedHelpers.DefaultRe
 @tag("Widgets")
 @route("/widgets/{id}")
 @delete
-op Widgets_delete(@path id: string): NoContentResponse | GeneratedHelpers.DefaultResponse<
+op Widgets_delete(
+  @path id: string,
+): /** There is no content to send for this request, but the headers may be useful.  */ NoContentResponse | GeneratedHelpers.DefaultResponse<
   Description = "An unexpected error response.",
   Body = Error
 >;
@@ -58,7 +63,9 @@ op Widgets_delete(@path id: string): NoContentResponse | GeneratedHelpers.Defaul
 @tag("Widgets")
 @route("/widgets/{id}")
 @get
-op Widgets_read(@path id: string): Widget | GeneratedHelpers.DefaultResponse<
+op Widgets_read(
+  @path id: string,
+): /** The request has succeeded. */ Widget | GeneratedHelpers.DefaultResponse<
   Description = "An unexpected error response.",
   Body = Error
 >;
@@ -69,7 +76,7 @@ op Widgets_read(@path id: string): Widget | GeneratedHelpers.DefaultResponse<
 op Widgets_update(
   ...Parameters.Widget.id,
   @body body: WidgetUpdate,
-): Widget | GeneratedHelpers.DefaultResponse<
+): /** The request has succeeded. */ Widget | GeneratedHelpers.DefaultResponse<
   Description = "An unexpected error response.",
   Body = Error
 >;
@@ -77,7 +84,9 @@ op Widgets_update(
 @tag("Widgets")
 @route("/widgets/{id}/analyze")
 @post
-op Widgets_analyze(@path id: string): Body<string> | GeneratedHelpers.DefaultResponse<
+op Widgets_analyze(
+  @path id: string,
+): /** The request has succeeded. */ Body<string> | GeneratedHelpers.DefaultResponse<
   Description = "An unexpected error response.",
   Body = Error
 >;

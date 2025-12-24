@@ -25,12 +25,12 @@ model DogOwner {
   } = #{ street: "", city: "", state: "", `zip.code`: "" };
 }
 
-@route("/") @get op extensive(): DogOwner | {
+@route("/") @get op extensive(): /** The request has succeeded. */ DogOwner | /** Client error */ {
   @statusCode
   @minValue(400)
   @maxValue(499)
   statusCode: int32;
-} | {
+} | /** Server error */ {
   @statusCode
   @minValue(500)
   @maxValue(599)

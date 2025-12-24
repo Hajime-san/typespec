@@ -43,7 +43,7 @@ it("generates operations with no params", async () => {
     @info(#{ version: "1.0.0" })
     namespace TestService;
 
-    @route("/") @get op rootGet(): Body<{
+    @route("/") @get op rootGet(): /** test response */ Body<{
       message?: string;
     }>;
     "
@@ -79,7 +79,7 @@ it("generates operations without common params", async () => {
     @info(#{ version: "1.0.0" })
     namespace TestService;
 
-    @route("/{id}") @get op idGet(@path id: string): Body<{
+    @route("/{id}") @get op idGet(@path id: string): /** test response */ Body<{
       message?: string;
     }>;
     "
@@ -116,7 +116,7 @@ it("generates operations with common params", async () => {
     @info(#{ version: "1.0.0" })
     namespace TestService;
 
-    @route("/{id}") @get op idGet(@path id: string): Body<{
+    @route("/{id}") @get op idGet(@path id: string): /** test response */ Body<{
       message?: string;
     }>;
     "
@@ -153,7 +153,10 @@ it("generates operations with common and specific params", async () => {
     @info(#{ version: "1.0.0" })
     namespace TestService;
 
-    @route("/{id}") @get op idGet(@path id: string, @query(#{ explode: true }) foo?: string): Body<{
+    @route("/{id}") @get op idGet(
+      @path id: string,
+      @query(#{ explode: true }) foo?: string,
+    ): /** test response */ Body<{
       message?: string;
     }>;
     "
@@ -210,11 +213,14 @@ it("supports overriding common params with operation params", async () => {
       @path id: string,
       @query(#{ explode: true }) foo?: string,
       @header \`x-header\`: string,
-    ): Body<{
+    ): /** test response */ Body<{
       message?: string;
     }>;
 
-    @route("/{id}") @put op idPut(@path id: string, @header \`x-header\`?: string): Body<{
+    @route("/{id}") @put op idPut(
+      @path id: string,
+      @header \`x-header\`?: string,
+    ): /** test response */ Body<{
       message?: string;
     }>;
     "
@@ -254,7 +260,7 @@ it("supports operation summary", async () => {
     @route("/")
     @get
     @summary("Root Get Summary")
-    op rootGet(): Body<{
+    op rootGet(): /** test response */ Body<{
       message?: string;
     }>;
     "
@@ -319,7 +325,7 @@ model Foo {
   message?: string;
 }
 
-@route("/") @get op getFoo(): ${response};
+@route("/") @get op getFoo(): /** test response */ ${response};
 `);
     });
 
@@ -376,7 +382,7 @@ model Foo {
           message?: string;
         }
 
-        @route("/") @get op getFoo(): CreatedResponse & Foo;
+        @route("/") @get op getFoo(): /** test response */ CreatedResponse & Foo;
         "
       `);
 
@@ -413,7 +419,7 @@ model Foo {
         @info(#{ version: "1.0.0" })
         namespace TestService;
 
-        @route("/") @get op getFoo(): CreatedResponse & {
+        @route("/") @get op getFoo(): /** test response */ CreatedResponse & {
           @header foo?: string;
         };
         "
@@ -519,7 +525,7 @@ model Foo {
           message?: string;
         }
 
-        @route("/") @get op getFoo(): Foo;
+        @route("/") @get op getFoo(): /** test response */ Foo;
         "
       `);
 
@@ -567,7 +573,7 @@ model Foo {
         @info(#{ version: "1.0.0" })
         namespace TestService;
 
-        @route("/") @get op getFoo(): Body<{
+        @route("/") @get op getFoo(): /** test response */ Body<{
           id: string;
           message?: string;
         }>;
@@ -607,7 +613,7 @@ model Foo {
         @info(#{ version: "1.0.0" })
         namespace TestService;
 
-        @route("/") @get op getFoo(): {
+        @route("/") @get op getFoo(): /** test response */ {
           @header foo?: string;
         };
         "
@@ -1027,7 +1033,7 @@ model Foo {
       @info(#{ version: "1.0.0" })
       namespace TestService;
 
-      @route("/") @get op getFoo():
+      @route("/") @get op getFoo(): /** test response */
         | Body<string>
         | {
             @header contentType: "application/xml";
@@ -1114,7 +1120,7 @@ model Foo {
         message?: string;
       }
 
-      @route("/") @get op getFoo(): Foo;
+      @route("/") @get op getFoo(): /** test response */ Foo;
       "
     `);
 
@@ -1347,7 +1353,7 @@ describe("requestBody", () => {
       @route("/") @post op postFoo(
         /** This is a test */
         @body body: Foo,
-      ): OkResponse;
+      ): /** test response */ OkResponse;
       "
     `);
 
@@ -1414,7 +1420,7 @@ describe("requestBody", () => {
       @route("/") @post op postFoo(
         /** This is a test */
         @body body: Foo,
-      ): OkResponse;
+      ): /** test response */ OkResponse;
       "
     `);
 
@@ -1482,7 +1488,7 @@ describe("requestBody", () => {
       @route("/") @post op postFoo(
         /** Overwritten description */
         @body body: Foo,
-      ): OkResponse;
+      ): /** test response */ OkResponse;
       "
     `);
 

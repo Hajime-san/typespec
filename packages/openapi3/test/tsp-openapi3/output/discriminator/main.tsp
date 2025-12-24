@@ -32,12 +32,12 @@ model PetOwner {
   pet?: Pet;
 }
 
-@route("/") @get op extensive(): PetOwner | {
+@route("/") @get op extensive(): /** The request has succeeded. */ PetOwner | /** Client error */ {
   @statusCode
   @minValue(400)
   @maxValue(499)
   statusCode: int32;
-} | {
+} | /** Server error */ {
   @statusCode
   @minValue(500)
   @maxValue(599)

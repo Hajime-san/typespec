@@ -123,7 +123,7 @@ op addPet(
 ): {
   @header contentType: "application/xml";
   @body body: Pet;
-} | Pet | {
+} | /** Successful operation */ Pet | /** Invalid input */ {
   @statusCode statusCode: 405;
 };
 
@@ -142,10 +142,10 @@ op updatePet(
       @header contentType: "application/xml";
       @body body: Pet;
     }
-  | Pet
-  | BadRequestResponse
-  | NotFoundResponse
-  | {
+  | /** Successful operation */ Pet
+  | /** Invalid ID supplied */ BadRequestResponse
+  | /** Pet not found */ NotFoundResponse
+  | /** Validation exception */ {
       @statusCode statusCode: 405;
     };
 
@@ -160,7 +160,7 @@ op findPetsByStatus(
 ): {
   @header contentType: "application/xml";
   @body body: Pet[];
-} | Body<Pet[]> | BadRequestResponse;
+} | /** successful operation */ Body<Pet[]> | /** Invalid status value */ BadRequestResponse;
 
 /** Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing. */
 @tag("pet")
@@ -173,7 +173,7 @@ op findPetsByTags(
 ): {
   @header contentType: "application/xml";
   @body body: Pet[];
-} | Body<Pet[]> | BadRequestResponse;
+} | /** successful operation */ Body<Pet[]> | /** Invalid tag value */ BadRequestResponse;
 
 @tag("pet")
 @route("/pet/{petId}")
@@ -184,7 +184,7 @@ op deletePet(
 
   /** Pet id to delete */
   @path petId: int64,
-): BadRequestResponse;
+): /** Invalid pet value */ BadRequestResponse;
 
 /** Returns a single pet */
 @tag("pet")
@@ -199,9 +199,9 @@ op getPetById(
       @header contentType: "application/xml";
       @body body: Pet;
     }
-  | Pet
-  | BadRequestResponse
-  | NotFoundResponse;
+  | /** successful operation */ Pet
+  | /** Invalid ID supplied */ BadRequestResponse
+  | /** Pet not found */ NotFoundResponse;
 
 @tag("pet")
 @route("/pet/{petId}")
@@ -216,7 +216,7 @@ op updatePetWithForm(
 
   /** Status of pet that needs to be updated */
   @query(#{ explode: true }) status?: string,
-): {
+): /** Invalid input */ {
   @statusCode statusCode: 405;
 };
 
@@ -233,7 +233,7 @@ op uploadFile(
 
   @header contentType: "application/octet-stream",
   @body body: bytes,
-): ApiResponse;
+): /** successful operation */ ApiResponse;
 
 /** Returns a map of status codes to quantities */
 @tag("store")
@@ -241,7 +241,7 @@ op uploadFile(
 @route("/store/inventory")
 @get
 @summary("Returns pet inventories by status")
-op getInventory(): Body<Record<int32>>;
+op getInventory(): /** successful operation */ Body<Record<int32>>;
 
 /** Place a new order in the store */
 @tag("store")
@@ -252,7 +252,7 @@ op getInventory(): Body<Record<int32>>;
 op placeOrder(
   @header contentType: "application/json" | "application/xml" | "application/x-www-form-urlencoded",
   @body body: Order,
-): Order | {
+): /** successful operation */ Order | /** Invalid input */ {
   @statusCode statusCode: 405;
 };
 
@@ -265,7 +265,7 @@ op placeOrder(
 op deleteOrder(
   /** ID of the order that needs to be deleted */
   @path orderId: int64,
-): BadRequestResponse | NotFoundResponse;
+): /** Invalid ID supplied */ BadRequestResponse | /** Order not found */ NotFoundResponse;
 
 /** For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions. */
 @tag("store")
@@ -281,9 +281,9 @@ op getOrderById(
       @header contentType: "application/xml";
       @body body: Order;
     }
-  | Order
-  | BadRequestResponse
-  | NotFoundResponse;
+  | /** successful operation */ Order
+  | /** Invalid ID supplied */ BadRequestResponse
+  | /** Order not found */ NotFoundResponse;
 
 /** This can only be done by the logged in user. */
 @tag("user")
@@ -315,7 +315,7 @@ op createUser(
 op createUsersWithListInput(@body body: User[]): {
   @header contentType: "application/xml";
   @body body: User;
-} | User | GeneratedHelpers.DefaultResponse<Description = "successful operation">;
+} | /** Successful operation */ User | GeneratedHelpers.DefaultResponse<Description = "successful operation">;
 
 @tag("user")
 @route("/user/login")
@@ -344,7 +344,7 @@ op loginUser(
   @header("X-Expires-After") XExpiresAfter?: utcDateTime;
 
   @body body: string;
-} | BadRequestResponse;
+} | /** Invalid username/password supplied */ BadRequestResponse;
 
 @tag("user")
 @route("/user/logout")
@@ -360,7 +360,7 @@ op logoutUser(): GeneratedHelpers.DefaultResponse<Description = "successful oper
 op deleteUser(
   /** The name that needs to be deleted */
   @path username: string,
-): BadRequestResponse | NotFoundResponse;
+): /** Invalid username supplied */ BadRequestResponse | /** User not found */ NotFoundResponse;
 
 @tag("user")
 @route("/user/{username}")
@@ -374,9 +374,9 @@ op getUserByName(
       @header contentType: "application/xml";
       @body body: User;
     }
-  | User
-  | BadRequestResponse
-  | NotFoundResponse;
+  | /** successful operation */ User
+  | /** Invalid username supplied */ BadRequestResponse
+  | /** User not found */ NotFoundResponse;
 
 /** This can only be done by the logged in user. */
 @tag("user")

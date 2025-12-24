@@ -350,7 +350,7 @@ describe("header", () => {
         @header(#{ explode: true }) custom?: {
           id?: string;
         },
-      ): OkResponse;
+      ): /** test response */ OkResponse;
       "
     `);
   });
@@ -401,7 +401,7 @@ describe("header", () => {
         @header custom2?: {
           id?: string;
         },
-      ): OkResponse;
+      ): /** test response */ OkResponse;
       "
     `);
   });

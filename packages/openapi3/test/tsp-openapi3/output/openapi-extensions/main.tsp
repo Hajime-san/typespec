@@ -29,4 +29,4 @@ model NestedConfig {
   id: "some";
 }
 
-@route("/") @get op foo(): Foo;
+@route("/") @get op foo(): /** The request has succeeded. */ Foo;

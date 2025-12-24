@@ -41,9 +41,9 @@ model PetOwnerProfileRequestBody {
     referrer?: HttpPart<string>;
     age: HttpPart<int32>;
   },
-): NoContentResponse;
+): /** The request has succeeded. */ NoContentResponse;
 
 @route("/profile") @post op extensiveWithComponents(
   @header contentType: "multipart/form-data",
   @multipartBody body: PetOwnerProfileRequestBody,
-): NoContentResponse;
+): /** The request has succeeded. */ NoContentResponse;

@@ -39,23 +39,23 @@ model Pet {
   @body body: {
     pet: Dog | Cat;
   },
-): NoContentResponse;
+): /** There is no content to send for this request, but the headers may be useful.  */ NoContentResponse;
 
 @route("/one") @post op putOne(
   @body body: {
     @oneOf
     pet: Dog | Cat;
   },
-): NoContentResponse;
+): /** There is no content to send for this request, but the headers may be useful.  */ NoContentResponse;
 
 @route("/any/schema") @post op putAnySchema(
   @body body: {
     pet: Any;
   },
-): NoContentResponse;
+): /** There is no content to send for this request, but the headers may be useful.  */ NoContentResponse;
 
 @route("/one/schema") @post op putOneSchema(
   @body body: {
     pet: One;
   },
-): NoContentResponse;
+): /** There is no content to send for this request, but the headers may be useful.  */ NoContentResponse;

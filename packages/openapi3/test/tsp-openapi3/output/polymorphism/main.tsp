@@ -28,4 +28,4 @@ model Pet {
   kind?: string;
 }
 
-@route("/Pets") @get op root_read(): Pet;
+@route("/Pets") @get op root_read(): /** The request has succeeded. */ Pet;

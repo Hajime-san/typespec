@@ -93,12 +93,12 @@ describe("Multiple content types", () => {
       op myOperationMultipart(
         @header contentType: "multipart/form-data",
         @multipartBody body: FooMultiPart,
-      ): Bar;
+      ): /** Success */ Bar;
 
       @sharedRoute
       @route("/my-operation")
       @post
-      op myOperationJson(@body body: FooJson): Bar;
+      op myOperationJson(@body body: FooJson): /** Success */ Bar;
       "
     `);
 
@@ -149,6 +149,7 @@ describe("Multiple content types", () => {
     // Should combine into single operation with union, not split
     expect(tsp).not.toContain("@sharedRoute");
     expect(tsp).toContain("op myOperation");
+    expect(tsp).toContain("/** Success */");
     expect(tsp).toContain('@header contentType: "application/json" | "application/xml"');
     expect(tsp).toContain("@body body: FooJson | FooXml");
 
@@ -191,6 +192,7 @@ describe("Multiple content types", () => {
     expect(tsp).not.toContain("@sharedRoute");
     expect(tsp).not.toContain("myOperationJson");
     expect(tsp).toContain("op myOperation");
+    expect(tsp).toContain("/** Success */");
     expect(tsp).toContain("@body body: FooJson");
 
     await validateTsp(tsp);
@@ -232,6 +234,7 @@ describe("Multiple content types", () => {
     expect(tsp).not.toContain("@sharedRoute");
     expect(tsp).not.toContain("myOperationMultipart");
     expect(tsp).toContain("op myOperation");
+    expect(tsp).toContain("/** Success */");
     expect(tsp).toContain('@header contentType: "multipart/form-data"');
     expect(tsp).toContain("@multipartBody body: FooMultiPart");
 

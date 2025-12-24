@@ -168,7 +168,7 @@ function handleDefaultResponse({
 
 type GenerateResponseExpressionsProps = {
   statusCode: StatusCodes;
-  description?: string;
+  description: string;
   headers: TypeSpecModelProperty[];
   contents: [string, OpenAPI3MediaType][];
   operationScope: string[];
@@ -191,10 +191,19 @@ function generateResponseExpressions({
     return handleDefaultResponse({ headers, contents, operationScope, context, description });
   }
 
+  /**
+   * inline description is only supported by doc comments currently
+   * so we need to escape any closing comment tags
+   * {@link file://./../utils/docs.ts generateDocs} includes its own
+   * escaping for doc comments, but inline @doc decorator is not supported yet
+   */
+  const escapedDescription = description.replace(/\*\//g, "*\\/");
+  const inlineDescription = `/** ${escapedDescription} */`;
+
   // Scenario 1 - only have a mapped status code - use it directly
   // Example: OkResponse
   if (statusCodeMetadata.httpLibModel && !hasContents && !headers.length) {
-    return [statusCodeMetadata.httpLibModel];
+    return [`${inlineDescription} ${statusCodeMetadata.httpLibModel}`];
   }
 
   // 200 statusCode is default, we can ignore it since we know we have headers or body to fill out response
@@ -209,14 +218,14 @@ function generateResponseExpressions({
   if (!hasContents) {
     if (statusCodeMetadata.httpLibModel) {
       return [
-        `${statusCodeMetadata.httpLibModel} & ${generateModelExpression(headers, operationScope, context)}`,
+        `${inlineDescription} ${statusCodeMetadata.httpLibModel} & ${generateModelExpression(headers, operationScope, context)}`,
       ];
     }
     const modelProps = [...headers];
     if (statusCodeMetadata.modelProperty) {
       modelProps.push(statusCodeMetadata.modelProperty);
     }
-    return [generateModelExpression(modelProps, operationScope, context)];
+    return [`${inlineDescription} ${generateModelExpression(modelProps, operationScope, context)}`];
   }
 
   return contents.map(([mediaType, content]) => {
@@ -236,7 +245,7 @@ function generateResponseExpressions({
         operationScope,
       );
       context.markSSEUsage();
-      return `SSEStream<${eventUnionType}>`;
+      return `${inlineDescription} SSEStream<${eventUnionType}>`;
       // If no proper schema reference, fall through to regular handling
     }
 
@@ -247,7 +256,7 @@ function generateResponseExpressions({
       // Scenario 3 - have a mapped status code and body schema is a ref using application/json - intersection!
       // Example: CreatedResponse & Widget
       if ("$ref" in bodySchema && statusCodeMetadata.httpLibModel) {
-        return `${statusCodeMetadata.httpLibModel} & ${context.generateTypeFromRefableSchema(
+        return `${inlineDescription} ${statusCodeMetadata.httpLibModel} & ${context.generateTypeFromRefableSchema(
           bodySchema,
           operationScope,
         )}`;
@@ -258,9 +267,9 @@ function generateResponseExpressions({
       if (statusCodeMetadata.literalStatusCode === 200) {
         const body = context.generateTypeFromRefableSchema(bodySchema, operationScope);
         if ("$ref" in bodySchema) {
-          return body;
+          return `${inlineDescription} ${body}`;
         }
-        return `Body<${body}>`;
+        return `${inlineDescription} Body<${body}>`;
       }
     }
 

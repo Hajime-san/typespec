@@ -45,17 +45,17 @@ union ChannelEventWithCustomContentType {
 }
 
 @route("/channel/no-terminal") @get op subscribeToChannelNoTerminal(
-): SSEStream<ChannelEventsNoTerminal>;
+): /** A request body to add a stream of typed data. */ SSEStream<ChannelEventsNoTerminal>;
 
 @route("/channel/no-terminal-post") @post op subscribeToChannelNoTerminal(
   /** Request body for subscribing to a channel without terminal event. */
   @body body: {
     channelId?: string;
   },
-): SSEStream<ChannelEventsNoTerminal>;
+): /** A request body to add a stream of typed data. */ SSEStream<ChannelEventsNoTerminal>;
 
 @route("/channel/with-terminal") @get op subscribeToChannelWithTerminal(
-): SSEStream<ChannelEventsWithTerminal>;
+): /** A request body to add a stream of typed data. */ SSEStream<ChannelEventsWithTerminal>;
 
 @route("/data/custom-content-type") @get op subscribeToDataStream(
-): SSEStream<ChannelEventWithCustomContentType>;
+): /** A data stream with custom content types. */ SSEStream<ChannelEventWithCustomContentType>;

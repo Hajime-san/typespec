@@ -41,7 +41,7 @@ op listPets(
 @route("/pets")
 @post
 @summary("Create a pet")
-op createPets(): CreatedResponse | GeneratedHelpers.DefaultResponse<
+op createPets(): /** Null response */ CreatedResponse | GeneratedHelpers.DefaultResponse<
   Description = "unexpected error",
   Body = Error
 >;
@@ -53,7 +53,10 @@ op createPets(): CreatedResponse | GeneratedHelpers.DefaultResponse<
 op showPetById(
   /** The id of the pet to retrieve */
   @path petId: string,
-): Pet | GeneratedHelpers.DefaultResponse<Description = "unexpected error", Body = Error>;
+): /** Expected response to a valid request */ Pet | GeneratedHelpers.DefaultResponse<
+  Description = "unexpected error",
+  Body = Error
+>;
 
 namespace GeneratedHelpers {
   @doc(Description)

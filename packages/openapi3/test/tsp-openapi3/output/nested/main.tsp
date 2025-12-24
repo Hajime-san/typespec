@@ -17,7 +17,9 @@ namespace SubA {
     model Thing {
       name: string;
     }
-    @route("/sub/a/subsub") @post op doSomething(@body body: SubA.SubSubA.Thing): Body<string>;
+    @route("/sub/a/subsub") @post op doSomething(
+      @body body: SubA.SubSubA.Thing,
+    ): /** The request has succeeded. */ Body<string>;
   }
 }
 
@@ -25,7 +27,9 @@ namespace SubB {
   model Thing {
     id: int64;
   }
-  @route("/sub/b") @post op doSomething(@body body: SubB.Thing): Body<string>;
+  @route("/sub/b") @post op doSomething(
+    @body body: SubB.Thing,
+  ): /** The request has succeeded. */ Body<string>;
 }
 
 namespace SubC {
@@ -34,5 +38,5 @@ namespace SubC {
       thing: SubA.Thing;
       thing2: SubA.Thing;
     },
-  ): Body<string>;
+  ): /** The request has succeeded. */ Body<string>;
 }
