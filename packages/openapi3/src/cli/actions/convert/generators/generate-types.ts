@@ -570,7 +570,7 @@ function getNumberType(schema: SupportedOpenAPISchema): string {
   }
 }
 
-function getStringType(schema: SupportedOpenAPISchema): string {
+export function getStringType(schema: SupportedOpenAPISchema): string {
   const format = schema.format ?? "";
 
   // Handle contentEncoding: base64 for OpenAPI 3.1+ (indicates binary data encoded as base64 string)

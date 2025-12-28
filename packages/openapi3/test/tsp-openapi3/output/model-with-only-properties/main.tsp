@@ -10,10 +10,10 @@ using OpenAPI;
 namespace title;
 
 model Dog {
-  object: string;
-  first_id: string;
-  last_id: string;
-  has_more: boolean;
+  @example("list") object: string;
+  @example("msg_abc123") first_id: string;
+  @example("msg_abc123") last_id: string;
+  @example(false) has_more: boolean;
 }
 
 @route("/") @get op extensive(): Dog | {

@@ -10,6 +10,7 @@ import {
   Refable,
 } from "../../../../types.js";
 import { stringLiteral } from "../generators/common.js";
+import { getStringType } from "../generators/generate-types.js";
 import { TSValue, TypeSpecDecorator } from "../interfaces.js";
 
 const validLocations = ["header", "query", "path"];
@@ -210,12 +211,18 @@ export function getDecoratorsForSchema(
     case "array":
       decorators.push(...getArraySchemaDecorators(schema));
       break;
+    case "object":
+      decorators.push(...getObjectSchemaDecorators(schema));
+      break;
     case "integer":
     case "number":
       decorators.push(...getNumberSchemaDecorators(schema));
       break;
     case "string":
       decorators.push(...getStringSchemaDecorators(schema));
+      break;
+    case "boolean":
+      decorators.push(...getBooleanSchemaDecorators(schema));
       break;
     default:
       break;
@@ -266,6 +273,13 @@ function getArraySchemaDecorators(schema: OpenAPI3Schema | OpenAPISchema3_1) {
     decorators.push({ name: "maxItems", args: [schema.maxItems] });
   }
 
+  if ("example" in schema && Array.isArray(schema.example)) {
+    const value = createTSValueFromObjectValue(schema.example);
+    if (value) {
+      decorators.push({ name: "example", args: [value] });
+    }
+  }
+
   return decorators;
 }
 
@@ -286,6 +300,10 @@ function getNumberSchemaDecorators(schema: OpenAPI3Schema | OpenAPISchema3_1) {
     } else {
       decorators.push({ name: "maxValue", args: [schema.maximum] });
     }
+  }
+
+  if ("example" in schema && typeof schema.example === "number") {
+    decorators.push({ name: "example", args: [schema.example] });
   }
 
   return decorators;
@@ -341,6 +359,84 @@ function getStringSchemaDecorators(schema: OpenAPI3Schema | OpenAPISchema3_1) {
       name: "encode",
       args: [createTSValue(`"base64"`), createTSValue("string")],
     });
+  }
+
+  if ("example" in schema && typeof schema.example === "string") {
+    if (!schema.format) {
+      decorators.push({ name: "example", args: [schema.example] });
+    } else {
+      switch (schema.format) {
+        case "binary":
+        case "byte": {
+          decorators.push(
+            ...[
+              { name: "format", args: [schema.format] },
+              { name: "example", args: [schema.example] },
+            ],
+          );
+          break;
+        }
+        case "uri":
+          decorators.push({ name: "example", args: [schema.example] });
+          break;
+        case "date":
+        case "date-time":
+        case "time":
+        case "duration": {
+          const type = getStringType(schema);
+          const value = createTSValue(`${type}.fromISO(${stringLiteral(schema.example)})`);
+          decorators.push({
+            name: "example",
+            args: [value],
+          });
+          break;
+        }
+      }
+    }
+
+    // https://swagger.io/specification/#working-with-binary-data
+    // byte format for OpenAPI 3.1
+    if (
+      "contentMediaType" in schema &&
+      typeof schema.contentMediaType === "string" &&
+      "contentEncoding" in schema &&
+      typeof schema.contentEncoding === "string"
+    ) {
+      decorators.push(
+        ...[
+          { name: "JsonSchema.contentMediaType", args: [schema.contentMediaType] },
+          { name: "JsonSchema.contentEncoding", args: [schema.contentEncoding] },
+        ],
+      );
+    }
+  }
+
+  return decorators;
+}
+
+function getBooleanSchemaDecorators(schema: OpenAPI3Schema | OpenAPISchema3_1) {
+  const decorators: TypeSpecDecorator[] = [];
+
+  if ("example" in schema && typeof schema.example === "boolean") {
+    decorators.push({ name: "example", args: [schema.example] });
+  }
+
+  return decorators;
+}
+
+function getObjectSchemaDecorators(schema: OpenAPI3Schema | OpenAPISchema3_1) {
+  const decorators: TypeSpecDecorator[] = [];
+
+  if (
+    "example" in schema &&
+    typeof schema.example === "object" &&
+    schema.example !== null &&
+    !Array.isArray(schema.example)
+  ) {
+    const value = createTSValueFromObjectValue(schema.example);
+    if (value) {
+      decorators.push({ name: "example", args: [value] });
+    }
   }
 
   return decorators;

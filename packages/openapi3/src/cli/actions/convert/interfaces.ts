@@ -65,7 +65,7 @@ export interface TypeSpecServiceInfo {
 
 export interface TypeSpecDecorator {
   name: string;
-  args: (object | number | string | TSValue)[];
+  args: (object | number | string | boolean | TSValue)[];
 }
 
 export interface TSValue {
